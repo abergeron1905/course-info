@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -21,6 +22,10 @@ class CourseJdbcRepository implements CourseRepository {
     private static final String INSERT_COURSE = """
             MERGE INTO Courses (id, name, length, url)
                 VALUES (?, ?, ?, ?)""";
+
+    private static final String ADD_NOTES = """
+            UPDATE Courses SET notes= ?
+                WHERE id = ?""";
 
     private final DataSource dataSource;
 
@@ -38,7 +43,7 @@ class CourseJdbcRepository implements CourseRepository {
             PreparedStatement statement = connection.prepareStatement(INSERT_COURSE);
             statement.setString(1, course.id());
             statement.setString(2, course.name());
-            statement.setLong(3, course.lenght());
+            statement.setLong(3, course.length());
             statement.setString(4, course.url());
             statement.execute();
 
@@ -60,7 +65,8 @@ class CourseJdbcRepository implements CourseRepository {
                 Course course = new Course(resultset.getString(1),
                         resultset.getString(2),
                         resultset.getLong(3),
-                        resultset.getString(4));
+                        resultset.getString(4),
+                        Optional.ofNullable(resultset.getString(5)));
 
                 courses.add(course);
             }
@@ -69,6 +75,20 @@ class CourseJdbcRepository implements CourseRepository {
             throw new RepositoryException("failed to retrieve courses ", e);
         }
 
+    }
+
+    @Override
+    public void addNotes(String id, String notes) {
+        try (Connection connection = dataSource.getConnection()) {
+
+            PreparedStatement statement = connection.prepareStatement(ADD_NOTES);
+            statement.setString(1, notes);
+            statement.setString(2, id);
+            statement.execute();
+
+        } catch (SQLException e) {
+            throw new RepositoryException("failed to add notes to " + id, e);
+        }
     }
 
 }

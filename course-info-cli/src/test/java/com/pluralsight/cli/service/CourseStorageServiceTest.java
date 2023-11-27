@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ public class CourseStorageServiceTest {
         "/url-1", false);
         courseStorageService.storePlurialsightCourses(List.of(psCourse1));
         
-        Course expectedCourse = new Course("1", "Title 1", 100, "https://app.pluralsight.com/url-1");
+        Course expectedCourse = new Course("1", "Title 1", 100, "https://app.pluralsight.com/url-1", Optional.empty());
 
         assertEquals(List.of(expectedCourse),  courseRepository.getAllCourses());    
 
@@ -42,7 +43,12 @@ public class CourseStorageServiceTest {
         public List<Course> getAllCourses() {
            return courses;
         }
-    
-        
+
+        @Override
+        public void addNotes(String id, String notes) {
+            throw new UnsupportedOperationException();
+        }
+
+
     }
 }

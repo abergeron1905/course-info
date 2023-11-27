@@ -2,6 +2,7 @@ package com.pluralsight.courseinfo.domain;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +28,7 @@ public class CourseTest {
         String id = "25E";
         String name = "Java Best Practices";
         String url =  "A fake Url";
-        Course course = new Course(id, name, 25, url);
+        Course course = new Course(id, name, 25, url, Optional.of("Notes "));
 
         assertTrue(course.id().equals(id));
         assertTrue(course.name().equals(name));
@@ -39,10 +40,10 @@ public class CourseTest {
     @ParameterizedTest
     @MethodSource("argsProviderFactory")
 
-    void whenACourseFieldIsNullorEmptyThenAnExceptionIsThrown(String id, String name, String url) {
+    void whenACourseFieldIsNullOrEmptyThenAnExceptionIsThrown(String id, String name, String url) {
        
         IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-           new Course(id, name, 175, url);
+           new Course(id, name, 175, url, Optional.empty());
         });
       
         Assertions.assertEquals("No value present", thrown.getMessage());

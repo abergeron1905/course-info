@@ -1,6 +1,7 @@
 package com.pluralsight.cli.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.pluralsight.courseinfo.domain.Course;
 import com.pluralsight.courseinfo.repository.CourseRepository;
@@ -16,7 +17,7 @@ public class CourseStorageService {
 
     public void storePlurialsightCourses(List<PluralsightCourse> psCourses){
         for(PluralsightCourse psCourse:psCourses){
-            Course course = new Course(psCourse.id(), psCourse.title(), psCourse.durationInMinutes(), PS_BASE_STRING + psCourse.contactUrl());
+            Course course = new Course(psCourse.id(), psCourse.title(), psCourse.durationInMinutes(), PS_BASE_STRING + psCourse.contactUrl(), Optional.empty());
            
             courseRepository.saveCourse(course);
         }
